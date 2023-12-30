@@ -54,11 +54,10 @@ class BlogsController < ApplicationController
   end
 
   def authorize_secret_blog_access
-    if @blog.secret
-      if !user_signed_in? || (current_user.id != @blog.user_id)
-        raise ActiveRecord::RecordNotFound 
-      end
-    end
+    return unless @blog.secret
+    return unless !user_signed_in? || (current_user.id != @blog.user_id)
+
+    raise ActiveRecord::RecordNotFound
   end
 
   def blog_params
