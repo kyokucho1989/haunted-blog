@@ -55,9 +55,9 @@ class BlogsController < ApplicationController
 
   def authorize_secret_blog_access
     return unless @blog.secret
-    return unless user_signed_in?
 
-    Blog.find_by!(user_id: current_user.id, id: @blog.id)
+    user_id = user_signed_in? ? current_user.id : 0
+    Blog.find_by!(user_id:, id: @blog.id)
   end
 
   def blog_params

@@ -6,7 +6,7 @@ class Blog < ApplicationRecord
   has_many :liking_users, class_name: 'User', source: :user, through: :likings
 
   validates :title, :content, presence: true
-  validate :cannnot_set_eyecatch_when_not_premium
+  after_save :cannnot_set_eyecatch_when_not_premium
   scope :published, -> { where('secret = FALSE') }
 
   scope :search, lambda { |term|
@@ -23,5 +23,6 @@ class Blog < ApplicationRecord
     return unless !user.premium && random_eyecatch
 
     self.random_eyecatch = false
+    save
   end
 end
