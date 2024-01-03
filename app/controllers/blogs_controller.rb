@@ -50,14 +50,14 @@ class BlogsController < ApplicationController
   end
 
   def ensure_blog_owner
-    raise ActiveRecord::RecordNotFound unless current_user.id == @blog.user_id
+    Blog.find_by!(user_id: current_user.id, id: @blog.id)
   end
 
   def authorize_secret_blog_access
     return unless @blog.secret
-    return unless !user_signed_in? || (current_user.id != @blog.user_id)
+    return unless user_signed_in?
 
-    raise ActiveRecord::RecordNotFound
+    Blog.find_by!(user_id: current_user.id, id: @blog.id)
   end
 
   def blog_params
