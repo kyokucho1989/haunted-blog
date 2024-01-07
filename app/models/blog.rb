@@ -6,6 +6,7 @@ class Blog < ApplicationRecord
   has_many :liking_users, class_name: 'User', source: :user, through: :likings
 
   validates :title, :content, presence: true
+
   scope :published, -> { where('secret = FALSE') }
 
   scope :search, lambda { |term|
