@@ -61,10 +61,8 @@ class BlogsController < ApplicationController
   end
 
   def blog_params
-    if current_user.premium
-      params.require(:blog).permit(:title, :content, :secret, :random_eyecatch)
-    else
-      params.require(:blog).permit(:title, :content, :secret)
-    end
+    permit_symbols = %i[title content secret]
+    permit_symbols.push(:random_eyecatch) if current_user.premium
+    params.require(:blog).permit(permit_symbols)
   end
 end
