@@ -3,7 +3,6 @@
 class BlogsController < ApplicationController
   skip_before_action :authenticate_user!, only: %i[index show]
 
-  before_action :set_blog, only: %i[show edit update destroy]
   before_action :ensure_blog_owner, only: %i[edit update destroy]
   before_action :authorize_secret_blog_access, only: %i[show]
 
@@ -45,19 +44,13 @@ class BlogsController < ApplicationController
 
   private
 
-  def set_blog
-    @blog = Blog.find(params[:id])
-  end
-
   def ensure_blog_owner
-    Blog.find_by!(user_id: current_user.id, id: @blog.id)
+    @blog = Blog.find_by!(user_id: current_user.id, id: params[:id])
   end
 
   def authorize_secret_blog_access
-    return unless @blog.secret
-
-    user_id = user_signed_in? ? current_user.id : 0
-    Blog.find_by!(user_id:, id: @blog.id)
+    user_id = user_signed_in? ? current_user.id : nil
+    @blog = Blog.where(user_id:, id: params[:id], secret: true).or(Blog.where(id: params[:id], secret: false)).first!
   end
 
   def blog_params
