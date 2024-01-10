@@ -45,7 +45,7 @@ class BlogsController < ApplicationController
   private
 
   def ensure_blog_owner
-    @blog = Blog.find_by!(user_id: current_user.id, id: params[:id])
+    @blog = current_user.blogs.find(params[:id])
   end
 
   def authorize_secret_blog_access
