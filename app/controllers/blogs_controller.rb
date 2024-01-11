@@ -49,8 +49,7 @@ class BlogsController < ApplicationController
   end
 
   def authorize_secret_blog_access
-    user_id = user_signed_in? ? current_user.id : nil
-    @blog = Blog.where(user_id:, id: params[:id], secret: true).or(Blog.where(id: params[:id], secret: false)).first!
+    @blog = Blog.where(user: current_user).or(Blog.published).find(params[:id])
   end
 
   def blog_params
